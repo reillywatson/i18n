@@ -36,3 +36,10 @@ func TestLanguages(t *testing.T) {
 		}
 	}
 }
+
+func TestAllLanguages(t *testing.T) {
+	all := Languages()
+	if len(all) <= 0 {
+		t.Errorf("expected list of languages, got none")
+	}
+}

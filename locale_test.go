@@ -51,3 +51,10 @@ func TestLocales(t *testing.T) {
 		}
 	}
 }
+
+func TestAllLocales(t *testing.T) {
+	all := Locales()
+	if len(all) <= 0 {
+		t.Errorf("expected list of locales, got none")
+	}
+}

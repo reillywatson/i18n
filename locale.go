@@ -6,6 +6,8 @@ import (
 
 var (
 	ErrLocaleNotFound = errors.New("i18n: locale not found")
+
+	allLocales []*Locale
 )
 
 type Locale struct {
@@ -34,9 +36,20 @@ type Locale struct {
 	NumberNegativePattern string
 }
 
+func init() {
+	allLocales = make([]*Locale, 0)
+	for _, locale := range locales {
+		allLocales = append(allLocales, locale)
+	}
+}
+
 func GetLocale(code string) (*Locale, error) {
 	if locale, found := locales[code]; found {
 		return locale, nil
 	}
 	return nil, ErrLocaleNotFound
+}
+
+func Locales() []*Locale {
+	return allLocales
 }

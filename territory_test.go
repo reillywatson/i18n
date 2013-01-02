@@ -38,3 +38,10 @@ func TestTerritories(t *testing.T) {
 		}
 	}
 }
+
+func TestAllTerritories(t *testing.T) {
+	all := Territories()
+	if len(all) <= 0 {
+		t.Errorf("expected list of territories, got none")
+	}
+}

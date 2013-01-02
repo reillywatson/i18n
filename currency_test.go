@@ -31,3 +31,10 @@ func TestCurrencies(t *testing.T) {
 		}
 	}
 }
+
+func TestAllCurrencies(t *testing.T) {
+	all := Currencies()
+	if len(all) <= 0 {
+		t.Errorf("expected list of currencies, got none")
+	}
+}
