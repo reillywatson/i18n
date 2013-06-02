@@ -7,54 +7,47 @@ import (
 func TestLocales(t *testing.T) {
 	var tests = []struct {
 		code              string
-		err               error
+		found             bool
 		expectedLanguage  string
 		expectedLangISO3  string
 		expectedTerritory string
 		expectedCurrCode  string
 	}{
-		{"xy",    ErrLocaleNotFound, "", "", "", ""},
-		{"de",    ErrLocaleNotFound, "", "", "", ""},
-		{"en",    ErrLocaleNotFound, "", "", "", ""},
-		{"fr",    ErrLocaleNotFound, "", "", "", ""},
-		{"de_AT", nil, "de", "deu", "AT", "EUR"},
-		{"de_CH", nil, "de", "deu", "CH", "CHF"},
-		{"de_DE", nil, "de", "deu", "DE", "EUR"},
-		{"en_CA", nil, "en", "eng", "CA", "CAD"},
-		{"en_GB", nil, "en", "eng", "GB", "GBP"},
-		{"en_US", nil, "en", "eng", "US", "USD"},
-		{"fr_CH", nil, "fr", "fra", "CH", "CHF"},
-		{"fr_FR", nil, "fr", "fra", "FR", "EUR"},
+		/*  0 */ {"xy", false, "", "", "", ""},
+		/*  1 */ {"de", false, "", "", "", ""},
+		/*  2 */ {"en", false, "", "", "", ""},
+		/*  3 */ {"fr", false, "", "", "", ""},
+		/*  4 */ {"de_AT", true, "de", "deu", "AT", "EUR"},
+		/*  5 */ {"de_CH", true, "de", "deu", "CH", "CHF"},
+		/*  6 */ {"de_DE", true, "de", "deu", "DE", "EUR"},
+		/*  7 */ {"en_CA", true, "en", "eng", "CA", "CAD"},
+		/*  8 */ {"en_GB", true, "en", "eng", "GB", "GBP"},
+		/*  9 */ {"en_US", true, "en", "eng", "US", "USD"},
+		/* 10 */ {"fr_CH", true, "fr", "fra", "CH", "CHF"},
+		/* 11 */ {"fr_FR", true, "fr", "fra", "FR", "EUR"},
 	}
 
-	for _, f := range tests {
-		loc, err := GetLocale(f.code)
-		if err != f.err {
-			t.Fatalf("expected error to be %v, got %v", f.err, err)
+	for i, f := range tests {
+		loc, found := Locales[f.code]
+		if found != f.found {
+			t.Fatalf("%d. expected %v found flag to be %v, got %v", i, f.code, f.found, found)
 		}
-		if err == nil {
+		if found {
 			if loc == nil {
-				t.Fatalf("expected locale to be != nil")
+				t.Fatalf("%d. expected locale to be != nil", i)
 			}
 			if f.expectedLanguage != loc.Language {
-				t.Errorf("expected Language to be %v, got %v", f.expectedLanguage, loc.Language)
+				t.Errorf("%d. expected Language to be %v, got %v", i, f.expectedLanguage, loc.Language)
 			}
 			if f.expectedLangISO3 != loc.LanguageISO3 {
-				t.Errorf("expected LanguageISO3 to be %v, got %v", f.expectedLangISO3, loc.LanguageISO3)
+				t.Errorf("%d. expected LanguageISO3 to be %v, got %v", i, f.expectedLangISO3, loc.LanguageISO3)
 			}
 			if f.expectedTerritory != loc.Territory {
-				t.Errorf("expected Territory to be %v, got %v", f.expectedTerritory, loc.Territory)
+				t.Errorf("%d. expected Territory to be %v, got %v", i, f.expectedTerritory, loc.Territory)
 			}
 			if f.expectedCurrCode != loc.CurrencyCode {
-				t.Errorf("expected CurrencyCode to be %v, got %v", f.expectedCurrCode, loc.CurrencyCode)
+				t.Errorf("%d. expected CurrencyCode to be %v, got %v", i, f.expectedCurrCode, loc.CurrencyCode)
 			}
 		}
-	}
-}
-
-func TestAllLocales(t *testing.T) {
-	all := Locales()
-	if len(all) <= 0 {
-		t.Errorf("expected list of locales, got none")
 	}
 }

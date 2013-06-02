@@ -7,39 +7,32 @@ import (
 func TestLanguages(t *testing.T) {
 	var tests = []struct {
 		code                string
-		err                 error
+		found               bool
 		expectedEnglishName string
 		expectedNativeName  string
 	}{
-		{"xy", ErrLanguageNotFound, "", ""},
-		{"de", nil, "German", "Deutsch"},
-		{"en", nil, "English", "English"},
-		{"fr", nil, "French", "français"},
-		{"es", nil, "Spanish", "español"},
+		/* 0 */ {"xy", false, "", ""},
+		/* 1 */ {"de", true, "German", "Deutsch"},
+		/* 2 */ {"en", true, "English", "English"},
+		/* 3 */ {"fr", true, "French", "français"},
+		/* 4 */ {"es", true, "Spanish", "español"},
 	}
 
-	for _, f := range tests {
-		l, err := GetLanguage(f.code)
-		if err != f.err {
-			t.Fatalf("expected error to be %v, got %v", f.err, err)
+	for i, f := range tests {
+		l, found := Languages[f.code]
+		if found != f.found {
+			t.Fatalf("%d. expected language %s found flag to be %v, got %v", i, f.code, f.found, found)
 		}
-		if f.err == nil {
+		if f.found {
 			if l == nil {
-				t.Fatalf("expected language to be != nil")
+				t.Fatalf("%d. expected language to be != nil", i)
 			}
 			if f.expectedEnglishName != l.EnglishName {
-				t.Errorf("expected EnglishName to be %v, got %v", f.expectedEnglishName, l.EnglishName)
+				t.Errorf("%d. expected EnglishName to be %v, got %v", i, f.expectedEnglishName, l.EnglishName)
 			}
 			if f.expectedNativeName != l.NativeName {
-				t.Errorf("expected NativeName to be %v, got %v", f.expectedNativeName, l.NativeName)
+				t.Errorf("%d. expected NativeName to be %v, got %v", i, f.expectedNativeName, l.NativeName)
 			}
 		}
-	}
-}
-
-func TestAllLanguages(t *testing.T) {
-	all := Languages()
-	if len(all) <= 0 {
-		t.Errorf("expected list of languages, got none")
 	}
 }

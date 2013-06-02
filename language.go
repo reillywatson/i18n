@@ -1,35 +1,11 @@
 package i18n
 
-import (
-	"errors"
-)
-
-var (
-	ErrLanguageNotFound = errors.New("i18n: language not found")
-
-	allLanguages []*Language
-)
-
+// Language represents all information about a language.
 type Language struct {
+	// Code is the 2-letter, downcase ISO code of the language (e.g. de).
 	Code string
+	// NativeName is the name of the language in the language itself.
 	NativeName string
+	// EnglishName is the name of the language in English.
 	EnglishName string
-}
-
-func init() {
-	allLanguages = make([]*Language, 0)
-	for _, lang := range languages {
-		allLanguages = append(allLanguages, lang)
-	}
-}
-
-func GetLanguage(code string) (*Language, error) {
-	if l, found := languages[code]; found {
-		return l, nil
-	}
-	return nil, ErrLanguageNotFound
-}
-
-func Languages() []*Language {
-	return allLanguages
 }

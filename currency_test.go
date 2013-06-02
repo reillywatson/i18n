@@ -6,35 +6,28 @@ import (
 
 func TestCurrencies(t *testing.T) {
 	var tests = []struct {
-		code           string
-		err            error
-		expectedCode   string
+		code         string
+		found        bool
+		expectedCode string
 	}{
-		{"XYZ", ErrCurrencyNotFound, ""},
-		{"EUR", nil, "EUR"},
-		{"CHF", nil, "CHF"},
-		{"USD", nil, "USD"},
+		/* 0 */ {"XYZ", false, ""},
+		/* 1 */ {"EUR", true, "EUR"},
+		/* 2 */ {"CHF", true, "CHF"},
+		/* 3 */ {"USD", true, "USD"},
 	}
 
-	for _, f := range tests {
-		c, err := GetCurrency(f.code)
-		if err != f.err {
-			t.Fatalf("expected error to be %v, got %v", f.err, err)
+	for i, f := range tests {
+		c, found := Currencies[f.code]
+		if found != f.found {
+			t.Fatalf("%d. expected currency code %v found flag to be %v, got %v", i, f.code, f.found, found)
 		}
-		if err == nil {
+		if found {
 			if c == nil {
-				t.Fatalf("expected currency to be != nil")
+				t.Fatalf("%d. expected currency to be != nil", i)
 			}
 			if f.expectedCode != c.Code {
-				t.Errorf("expected Code to be %v, got %v", f.expectedCode, c.Code)
+				t.Errorf("%d. expected Code to be %v, got %v", i, f.expectedCode, c.Code)
 			}
 		}
-	}
-}
-
-func TestAllCurrencies(t *testing.T) {
-	all := Currencies()
-	if len(all) <= 0 {
-		t.Errorf("expected list of currencies, got none")
 	}
 }

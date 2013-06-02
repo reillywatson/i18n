@@ -7,41 +7,34 @@ import (
 func TestTerritories(t *testing.T) {
 	var tests = []struct {
 		code                string
-		err                 error
+		found               bool
 		expectedEnglishName string
 		expectedNativeName  string
 	}{
-		{"XY", ErrTerritoryNotFound, "", ""},
-		{"DE", nil, "Germany", "Deutschland"},
+		/* 0 */ {"XY", false, "", ""},
+		/* 1 */ {"DE", true, "Germany", "Deutschland"},
 		// BUG(oe): Wrong native name, at least from a German standpoint ;-)
-		{"CH", nil, "Switzerland", "Svizra"},
+		/* 2 */ {"CH", true, "Switzerland", "Svizra"},
 		// BUG(oe): Wrong native name, at least from a German standpoint ;-)
-		{"GB", nil, "United Kingdom", "y Deyrnas Unedig"},
-		{"US", nil, "United States", "United States"},
+		/* 3 */ {"GB", true, "United Kingdom", "y Deyrnas Unedig"},
+		/* 4 */ {"US", true, "United States", "United States"},
 	}
 
-	for _, f := range tests {
-		c, err := GetTerritory(f.code)
-		if err != f.err {
-			t.Fatalf("expected error to be %v, got %v", f.err, err)
+	for i, f := range tests {
+		c, found := Territories[f.code]
+		if found != f.found {
+			t.Fatalf("%d. expected territory %s found flag to be %v, got %v", i, f.code, f.found, found)
 		}
-		if f.err == nil {
+		if f.found {
 			if c == nil {
-				t.Fatalf("expected country to be != nil")
+				t.Fatalf("%d. expected country to be != nil", i)
 			}
 			if f.expectedEnglishName != c.EnglishName {
-				t.Errorf("expected EnglishName to be %v, got %v", f.expectedEnglishName, c.EnglishName)
+				t.Errorf("%d. expected EnglishName to be %v, got %v", i, f.expectedEnglishName, c.EnglishName)
 			}
 			if f.expectedNativeName != c.NativeName {
-				t.Errorf("expected NativeName to be %v, got %v", f.expectedNativeName, c.NativeName)
+				t.Errorf("%d. expected NativeName to be %v, got %v", i, f.expectedNativeName, c.NativeName)
 			}
 		}
-	}
-}
-
-func TestAllTerritories(t *testing.T) {
-	all := Territories()
-	if len(all) <= 0 {
-		t.Errorf("expected list of territories, got none")
 	}
 }

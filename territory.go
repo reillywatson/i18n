@@ -1,35 +1,11 @@
 package i18n
 
-import (
-	"errors"
-)
-
-var (
-	ErrTerritoryNotFound = errors.New("i18n: territory not found")
-
-	allTerritories []*Territory
-)
-
+// Territory represents information about a country.
 type Territory struct {
+	// Code is the upcase ISO-code of the territory.
 	Code string
+	// NativeName is the name of the territory in the specified territory.
 	NativeName string
+	// EnglishName is the English name of the territory.
 	EnglishName string
-}
-
-func init() {
-	allTerritories = make([]*Territory, 0)
-	for _, territory := range territories {
-		allTerritories = append(allTerritories, territory)
-	}
-}
-
-func GetTerritory(code string) (*Territory, error) {
-	if t, found := territories[code]; found {
-		return t, nil
-	}
-	return nil, ErrTerritoryNotFound
-}
-
-func Territories() []*Territory {
-	return allTerritories
 }

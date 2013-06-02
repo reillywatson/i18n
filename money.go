@@ -1,6 +1,6 @@
 // Copyright (c) 2011 Jad Dittmar
 // See: https://github.com/Confunctionist/finance
-// 
+//
 // Some changes by Oliver Eilhard
 package i18n
 
@@ -22,13 +22,13 @@ var (
 	ErrMoneyDivideByZero          = errors.New("i18n: money division by zero")
 	ErrMoneyDecimalPlacesTooLarge = errors.New("i18n: money decimal places too large")
 
-	Guardi  int     = 100
-	Guard   int64   = int64(Guardi)
-	Guardf  float64 = float64(Guardi)
-	DP      int64   = 100         // for default of 2 decimal places => 10^2 (can be reset)
-	DPf     float64 = float64(DP) // for default of 2 decimal places => 10^2 (can be reset)
-	Round           = .5
-	Roundn          = Round * -1
+	Guardi int     = 100
+	Guard  int64   = int64(Guardi)
+	Guardf float64 = float64(Guardi)
+	DP     int64   = 100         // for default of 2 decimal places => 10^2 (can be reset)
+	DPf    float64 = float64(DP) // for default of 2 decimal places => 10^2 (can be reset)
+	Round          = .5
+	Roundn         = Round * -1
 )
 
 const (
@@ -171,8 +171,8 @@ func (m *Money) String() string {
 }
 
 func (m *Money) Format(locale string) string {
-	l, err := GetLocale(locale)
-	if err != nil {
+	l, found := Locales[locale]
+	if !found {
 		// If we don't have any information about the currency format,
 		// we'll try our best to display something useful.
 		return m.String()
@@ -180,8 +180,8 @@ func (m *Money) Format(locale string) string {
 
 	// DP is a measure for decimals: 2 decimal digits => dp = 10^2
 	currencySymbol := m.C
-	curr, err := GetCurrency(m.C)
-	if err == nil {
+	curr, found := Currencies[m.C]
+	if found {
 		currencySymbol = curr.Symbol
 	}
 
@@ -201,9 +201,11 @@ func (m *Money) Format(locale string) string {
 	// We use absolute values (as int64) from here on, because the
 	// negative sign is part of the currency format pattern.
 	absVal := m.Value()
-	if m.Sign() < 0 { absVal = -absVal }
-	wholeVal := absVal/dp
-	decVal := absVal%dp
+	if m.Sign() < 0 {
+		absVal = -absVal
+	}
+	wholeVal := absVal / dp
+	decVal := absVal % dp
 
 	// The unformatted string (without grouping and with a decimal sep of ".")
 	var unformatted string
@@ -247,9 +249,9 @@ func (m *Money) Format(locale string) string {
 	} else {
 		formatted = wholeBuf.String()
 	}
-	
+
 	output := strings.Replace(pattern, "$", currencySymbol, -1)
-	output  = strings.Replace(output, "n", formatted, -1)
+	output = strings.Replace(output, "n", formatted, -1)
 
 	return output
 }
