@@ -35,6 +35,11 @@ const (
 	MAXDEC = 18
 )
 
+// Clone returns a copy of a Money instance.
+func (m *Money) Clone() *Money {
+	return &Money{m.M, m.C}
+}
+
 // Returns the absolute value of Money.
 func (m *Money) Abs() *Money {
 	if m.M < 0 {
