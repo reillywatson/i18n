@@ -190,12 +190,15 @@ func (m *Money) Format(locale string) string {
 
 	// Group DP is a measure for grouping: 3 decimal digits => groupDp = 10^3
 	var groupDp int64
+	var groupSize int
 	if len(l.CurrencyGroupSizes) == 0 {
 		// BUG(oe): Handle currency group size
 		groupDp = int64(math.Pow10(3))
+		groupSize = 3
 	} else if len(l.CurrencyGroupSizes) >= 1 {
 		// BUG(oe): Handle currency group size
 		groupDp = int64(math.Pow10(l.CurrencyGroupSizes[0]))
+		groupSize = l.CurrencyGroupSizes[0]
 	}
 
 	// We use absolute values (as int64) from here on, because the
@@ -216,9 +219,16 @@ func (m *Money) Format(locale string) string {
 	}
 
 	// Perform grouping operation of the whole number
+	// For 1234, this returns this array: [234 1]
 	groups := make([]string, 0)
 	for {
-		groups = append(groups, fmt.Sprintf("%d", wholeVal%groupDp))
+		if groupDp > wholeVal {
+			// do not prepend zeros
+			groups = append(groups, fmt.Sprintf("%d", wholeVal%groupDp))
+		} else {
+			// prepend zeros
+			groups = append(groups, fmt.Sprintf("%0"+fmt.Sprintf("%d", groupSize)+"d", wholeVal%groupDp))
+		}
 		wholeVal /= groupDp
 		if wholeVal == 0 {
 			break
