@@ -18,6 +18,7 @@ func TestTerritories(t *testing.T) {
 		// BUG(oe): Wrong native name, at least from a German standpoint ;-)
 		/* 3 */ {"GB", true, "United Kingdom", "y Deyrnas Unedig"},
 		/* 4 */ {"US", true, "United States", "United States"},
+		/* 5 */ {"CN", true, "People's Republic of China", "ཀྲུང་ཧྭ་མི་དམངས་སྤྱི་མཐུན་རྒྱལ་ཁབ།"},
 	}
 
 	for i, f := range tests {

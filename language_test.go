@@ -16,6 +16,7 @@ func TestLanguages(t *testing.T) {
 		/* 2 */ {"en", true, "English", "English"},
 		/* 3 */ {"fr", true, "French", "français"},
 		/* 4 */ {"es", true, "Spanish", "español"},
+		/* 5 */ {"zh", true, "Chinese (Simplified)", "中文(简体)"},
 	}
 
 	for i, f := range tests {

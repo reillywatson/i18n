@@ -25,6 +25,7 @@ func TestLocales(t *testing.T) {
 		/*  9 */ {"en_US", true, "en", "eng", "US", "USD"},
 		/* 10 */ {"fr_CH", true, "fr", "fra", "CH", "CHF"},
 		/* 11 */ {"fr_FR", true, "fr", "fra", "FR", "EUR"},
+		/* 12 */ {"zh_CN", true, "zh", "zho", "CN", "CNY"},
 	}
 
 	for i, f := range tests {

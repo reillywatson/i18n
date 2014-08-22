@@ -14,6 +14,7 @@ func TestCurrencies(t *testing.T) {
 		/* 1 */ {"EUR", true, "EUR"},
 		/* 2 */ {"CHF", true, "CHF"},
 		/* 3 */ {"USD", true, "USD"},
+		/* 4 */ {"CNY", true, "CNY"},
 	}
 
 	for i, f := range tests {
