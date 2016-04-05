@@ -35,6 +35,12 @@ const (
 	MAXDEC = 18
 )
 
+// MakeMoney is a convenience function to build a Money with the given currency and amount.
+func MakeMoney(currency string, amount float64) *Money {
+	m := &Money{C: currency, M: 0}
+	return m.Setf(amount)
+}
+
 // Returns the absolute value of Money.
 func (m *Money) Abs() *Money {
 	if m.M < 0 {
