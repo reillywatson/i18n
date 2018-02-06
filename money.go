@@ -6,6 +6,7 @@ package i18n
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math"
@@ -35,28 +36,32 @@ const (
 	MAXDEC = 18
 )
 
-// MakeMoney is a convenience function to build a Money with the given currency and amount.
-func MakeMoney(currency string, amount float64) *Money {
-	m := &Money{C: currency, M: 0}
-	return m.Setf(amount)
+func (m Money) MarshalJSON() ([]byte, error) {
+	o := map[string]interface{}{"C": m.C, "M": m.M, "F": m.Get()}
+	return json.Marshal(o)
+}
+
+func MakeMoney(currency string, amount float64) Money {
+	fDPf := amount * DPf
+	r := int64(amount * DPf)
+	return Money{C: currency, M: Rnd(r, fDPf-float64(r))}
 }
 
 // Returns the absolute value of Money.
-func (m *Money) Abs() *Money {
+func (m Money) Abs() Money {
 	if m.M < 0 {
-		m.Neg()
+		return m.Neg()
 	}
 	return m
 }
 
 // Adds two money types.
-func (m *Money) Add(n *Money) *Money {
+func (m Money) Add(n Money) Money {
 	r := m.M + n.M
 	if (r^m.M)&(r^n.M) < 0 {
 		panic(ErrMoneyOverflow)
 	}
-	m.M = r
-	return m
+	return Money{C: m.C, M: r}
 }
 
 // Resets the package-wide decimal place (default is 2 decimal places).
@@ -80,38 +85,38 @@ func DecimalChange(d int) {
 }
 
 // Divides one Money type from another.
-func (m *Money) Div(n *Money) *Money {
+func (m Money) Div(n Money) Money {
 	f := Guardf * DPf * float64(m.M) / float64(n.M) / Guardf
 	i := int64(f)
-	return m.Set(Rnd(i, f-float64(i)))
+	return Money{C: m.C, M: Rnd(i, f-float64(i))}
 }
 
 // Gets value of money truncating after DP (see Value() for no truncation).
-func (m *Money) Gett() int64 {
+func (m Money) Gett() int64 {
 	return m.M / DP
 }
 
 // Gets the float64 value of money (see Value() for int64).
-func (m *Money) Get() float64 {
+func (m Money) Get() float64 {
 	return float64(m.M) / DPf
 }
 
 // Multiplies two Money types.
-func (m *Money) Mul(n *Money) *Money {
-	return m.Set(m.M * n.M / DP)
+func (m Money) Mul(n Money) Money {
+	return Money{C: m.C, M: m.M * n.M / DP}
 }
 
 // Multiplies a Money with a float to return a money-stored type.
-func (m *Money) Mulf(f float64) *Money {
+func (m Money) Mulf(f float64) Money {
 	i := m.M * int64(f*Guardf*DPf)
 	r := i / Guard / DP
-	return m.Set(Rnd(r, float64(i)/Guardf/DPf-float64(r)))
+	return Money{C: m.C, M: Rnd(r, float64(i)/Guardf/DPf-float64(r))}
 }
 
 // Returns the negative value of Money.
-func (m *Money) Neg() *Money {
+func (m Money) Neg() Money {
 	if m.M != 0 {
-		m.M *= -1
+		return Money{C: m.C, M: m.M * -1}
 	}
 	return m
 }
@@ -132,35 +137,8 @@ func Rnd(r int64, trunc float64) int64 {
 	return r
 }
 
-// Sets the Money field M.
-func (m *Money) Set(x int64) *Money {
-	m.M = x
-	return m
-}
-
-// Sets the Money fields M and C.
-func (m *Money) Setc(x int64, currency string) *Money {
-	m.M = x
-	m.C = currency
-	return m
-}
-
-// Sets a float64 into a Money type for precision calculations.
-func (m *Money) Setf(f float64) *Money {
-	fDPf := f * DPf
-	r := int64(f * DPf)
-	return m.Set(Rnd(r, fDPf-float64(r)))
-}
-
-// Sets a float64 into a Money type for precision calculations.
-func (m *Money) Setfc(f float64, currency string) *Money {
-	fDPf := f * DPf
-	r := int64(f * DPf)
-	return m.Setc(Rnd(r, fDPf-float64(r)), currency)
-}
-
 // Returns the Sign of Money 1 if positive, -1 if negative.
-func (m *Money) Sign() int {
+func (m Money) Sign() int {
 	if m.M < 0 {
 		return -1
 	}
@@ -168,7 +146,7 @@ func (m *Money) Sign() int {
 }
 
 // String for money type representation in basic monetary unit (DOLLARS CENTS).
-func (m *Money) String() string {
+func (m Money) String() string {
 	if m.Sign() > 0 {
 		return fmt.Sprintf("%d.%02d %s", m.Value()/DP, m.Value()%DP, m.C)
 	}
@@ -176,7 +154,7 @@ func (m *Money) String() string {
 	return fmt.Sprintf("-%d.%02d %s", m.Abs().Value()/DP, m.Abs().Value()%DP, m.C)
 }
 
-func (m *Money) Format(locale string) string {
+func (m Money) Format(locale string) string {
 	l, found := Locales[locale]
 	if !found {
 		// If we don't have any information about the currency format,
@@ -241,7 +219,7 @@ func (m *Money) Format(locale string) string {
 		}
 	}
 	var wholeBuf bytes.Buffer
-	for i, _ := range groups {
+	for i := range groups {
 		if i > 0 {
 			wholeBuf.WriteString(l.CurrencyGroupSeparator)
 		}
@@ -273,16 +251,15 @@ func (m *Money) Format(locale string) string {
 }
 
 // Subtracts one Money type from another.
-func (m *Money) Sub(n *Money) *Money {
+func (m Money) Sub(n Money) Money {
 	r := m.M - n.M
 	if (r^m.M)&^(r^n.M) < 0 {
 		panic(ErrMoneyOverflow)
 	}
-	m.M = r
-	return m
+	return Money{C: m.C, M: r}
 }
 
 // Returns in int64 the value of Money (also see Gett(), See Get() for float64).
-func (m *Money) Value() int64 {
+func (m Money) Value() int64 {
 	return m.M
 }
