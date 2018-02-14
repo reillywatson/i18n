@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -58,6 +59,71 @@ func TestMulf(t *testing.T) {
 	m3 := m1.Mulf(m2)
 	if m3.Get() != 2.46 {
 		t.Errorf("expected money amount to be %v, got %v", 2.46, m3.Get())
+	}
+}
+
+func TestSplit(t *testing.T) {
+	var fixtures = []struct {
+		money     Money
+		chunks    int64
+		expMoneys []Money
+	}{
+		{
+			money:  Money{1, "CAD"},
+			chunks: int64(1),
+			expMoneys: []Money{
+				{1, "CAD"},
+			},
+		},
+		{
+			money:  Money{2, "CAD"},
+			chunks: int64(2),
+			expMoneys: []Money{
+				{1, "CAD"},
+				{1, "CAD"},
+			},
+		},
+		{
+			money:  Money{700, "CAD"},
+			chunks: int64(3),
+			expMoneys: []Money{
+				{234, "CAD"},
+				{233, "CAD"},
+				{233, "CAD"},
+			},
+		},
+		{
+			money:  Money{7, "CAD"},
+			chunks: int64(3),
+			expMoneys: []Money{
+				{3, "CAD"},
+				{2, "CAD"},
+				{2, "CAD"},
+			},
+		},
+		{
+			money:  Money{99, "CAD"},
+			chunks: int64(10),
+			expMoneys: []Money{
+				{10, "CAD"},
+				{10, "CAD"},
+				{10, "CAD"},
+				{10, "CAD"},
+				{10, "CAD"},
+				{10, "CAD"},
+				{10, "CAD"},
+				{10, "CAD"},
+				{10, "CAD"},
+				{9, "CAD"},
+			},
+		},
+	}
+
+	for _, f := range fixtures {
+		got := f.money.Split(f.chunks)
+		if !reflect.DeepEqual(got, f.expMoneys) {
+			t.Errorf("expected %s, got %s", f.expMoneys, got)
+		}
 	}
 }
 
