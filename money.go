@@ -93,6 +93,9 @@ func (m Money) Div(n Money) Money {
 	return Money{C: m.C, M: Rnd(i, f-float64(i))}
 }
 
+// Splits the money amount into equal parts, up to 1 cent variation to not lose cents
+// The larger cent amounts go in the beginning of the array
+// chunks - how many parts to split money into, cannot exceed total cents in money amount
 func (m Money) Split(chunks int64) []Money {
 	if chunks <= 0 {
 		panic(ErrMoneyZeroOrLessChunks)
