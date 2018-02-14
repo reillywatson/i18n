@@ -22,6 +22,8 @@ var (
 	ErrMoneyOverflow              = errors.New("i18n: money overflow")
 	ErrMoneyDivideByZero          = errors.New("i18n: money division by zero")
 	ErrMoneyDecimalPlacesTooLarge = errors.New("i18n: money decimal places too large")
+	ErrMoneyCannotSplit           = errors.New("i18n: cannot split money into more chunks than cents in total")
+	ErrMoneyZeroOrLessChunks      = errors.New("i18n: cannot split money into zero or less chunks")
 
 	Guardi int     = 100
 	Guard  int64   = int64(Guardi)
@@ -89,6 +91,33 @@ func (m Money) Div(n Money) Money {
 	f := Guardf * DPf * float64(m.M) / float64(n.M) / Guardf
 	i := int64(f)
 	return Money{C: m.C, M: Rnd(i, f-float64(i))}
+}
+
+// Splits the money amount into equal parts, up to 1 cent variation to not lose cents
+// The larger cent amounts go in the beginning of the array
+// chunks - how many parts to split money into, cannot exceed total cents in money amount
+func (m Money) Split(chunks int64) []Money {
+	if chunks <= 0 {
+		panic(ErrMoneyZeroOrLessChunks)
+	}
+	if chunks > m.M {
+		panic(ErrMoneyCannotSplit)
+	}
+
+	chunkAmount := m.M / chunks
+	remainder := m.M % chunks //remainder cannot be > chunks
+
+	var result []Money
+	for i := int64(0); i < chunks; i++ {
+		result = append(result, Money{M: chunkAmount, C: m.C})
+	}
+
+	//give out missing cents starting from the top
+	for i := int64(0); i < remainder; i++ {
+		result[i] = result[i].Add(Money{M: 1, C: m.C})
+	}
+
+	return result
 }
 
 // Gets value of money truncating after DP (see Value() for no truncation).
