@@ -26,7 +26,6 @@ var (
 	ErrMoneyZeroOrLessChunks      = errors.New("i18n: cannot split money into zero or less chunks")
 
 	Guardi int     = 100
-	Guard  int64   = int64(Guardi)
 	Guardf float64 = float64(Guardi)
 	DP     int64   = 100         // for default of 2 decimal places => 10^2 (can be reset)
 	DPf    float64 = float64(DP) // for default of 2 decimal places => 10^2 (can be reset)
@@ -137,9 +136,19 @@ func (m Money) Mul(n Money) Money {
 
 // Multiplies a Money with a float to return a money-stored type.
 func (m Money) Mulf(f float64) Money {
-	i := m.M * int64(f*Guardf*DPf)
-	r := i / Guard / DP
-	return Money{C: m.C, M: Rnd(r, float64(i)/Guardf/DPf-float64(r))}
+	guard := int64(10)
+	//calculate how many digits are in m.M
+	n := m.M
+	for n > 1 {
+		guard = guard * 10
+		n = n / 10
+	}
+	guardf := float64(guard)
+
+	i := m.M * int64(f*guardf)
+	r := i / guard
+
+	return Money{C: m.C, M: Rnd(r, float64(i)/guardf-float64(r))}
 }
 
 // Returns the negative value of Money.
