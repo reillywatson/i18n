@@ -54,11 +54,43 @@ func TestMul(t *testing.T) {
 }
 
 func TestMulf(t *testing.T) {
-	m1 := Money{123, "EUR"}
-	m2 := 2.0
-	m3 := m1.Mulf(m2)
-	if m3.Get() != 2.46 {
-		t.Errorf("expected money amount to be %v, got %v", 2.46, m3.Get())
+	var fixtures = []struct {
+		money      Money
+		multiplier float64
+		expResult  float64
+	}{
+		{
+			money:      Money{123, "EUR"},
+			multiplier: 2.0,
+			expResult:  2.46,
+		},
+		{
+			money:      Money{1234, "EUR"},
+			multiplier: 2.26,
+			expResult:  27.89,
+		},
+		{
+			money:      Money{12345, "EUR"},
+			multiplier: 2.26,
+			expResult:  279,
+		},
+		{
+			money:      Money{123456, "EUR"},
+			multiplier: 2.26,
+			expResult:  2790.11,
+		},
+		{
+			money:      Money{123456, "EUR"},
+			multiplier: 7 / 12.0,
+			expResult:  720.16,
+		},
+	}
+
+	for _, fixture := range fixtures {
+		got := fixture.money.Mulf(fixture.multiplier).Get()
+		if got != fixture.expResult {
+			t.Errorf("expected money amount to be %v, got %v", fixture.expResult, got)
+		}
 	}
 }
 
