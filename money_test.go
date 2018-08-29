@@ -1,6 +1,7 @@
 package i18n
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"testing"
@@ -478,6 +479,29 @@ func TestMoneyFormat(t *testing.T) {
 		got := f.m.Format(f.locale)
 		if got != f.expected {
 			t.Errorf("expected %s, got %s (locale: %s)", f.expected, got, f.locale)
+		}
+	}
+}
+
+func TestJSONUnmarshal(t *testing.T) {
+	tests := []struct {
+		JSON    string
+		Money   Money
+		Success bool
+	}{
+		{`{"C": "CAD","M": 500}`, Money{C: "CAD", M: 500}, true},
+		{`{"C": "CAD","F": 5}`, Money{C: "CAD", M: 500}, true},
+		{`{"C": "CAD","F": 5, "M": 1}`, Money{}, false},
+	}
+	for _, test := range tests {
+		var m Money
+		err := json.Unmarshal([]byte(test.JSON), &m)
+		if (err == nil) != test.Success {
+			t.Errorf("Expected success %t, got error %v", test.Success, err)
+			continue
+		}
+		if !reflect.DeepEqual(test.Money, m) {
+			t.Errorf("Expected %+v, got %+v. JSON: %s", test.Money, m, test.JSON)
 		}
 	}
 }

@@ -37,9 +37,31 @@ const (
 	MAXDEC = 18
 )
 
+type moneyMarshalContainer struct {
+	M int64   `json:"M"`
+	C string  `json:"C"`
+	F float64 `json:"F"`
+}
+
 func (m Money) MarshalJSON() ([]byte, error) {
-	o := map[string]interface{}{"C": m.C, "M": m.M, "F": m.Get()}
-	return json.Marshal(o)
+	return json.Marshal(moneyMarshalContainer{M: m.M, C: m.C, F: m.Get()})
+}
+
+func (m *Money) UnmarshalJSON(b []byte) error {
+	var container moneyMarshalContainer
+	err := json.Unmarshal(b, &container)
+	if err != nil {
+		return err
+	}
+	if container.M != 0 && container.F != 0 && (Money{M: container.M, C: container.C}).Get() != container.F {
+		return errors.New("M and F were both specified, but they aren't equivalent")
+	}
+	m.C = container.C
+	m.M = container.M
+	if m.M == 0 && container.F != 0 {
+		*m = MakeMoney(m.C, container.F)
+	}
+	return nil
 }
 
 func MakeMoney(currency string, amount float64) Money {
