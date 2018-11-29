@@ -54,6 +54,34 @@ func TestMul(t *testing.T) {
 	}
 }
 
+func TestDiv(t *testing.T) {
+	// Rational number with repeating decimals get truncated to 2 decimals
+	m1 := Money{1000, "EUR"}
+	m2 := Money{300, "EUR"}
+	m3 := m1.Div(m2)
+	if m3.Get() != 3.33 {
+		t.Errorf("expected money amount to be %v, got %v", 3.33, m3.Get())
+	}
+
+	// Rational number with repeating decimals get truncated and rounded to 2 decimals
+	m1 = Money{2000, "EUR"}
+	m2 = Money{300, "EUR"}
+	m3 = m1.Div(m2)
+	if m3.Get() != 6.67 {
+		t.Errorf("expected money amount to be %v, got %v", 6.67, m3.Get())
+	}
+
+	// Should panic when dividing by zero
+	m1 = Money{10, "EUR"}
+	m2 = Money{0, "EUR"}
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Division by zero, should have paniced!")
+		}
+	}()
+	m1.Div(m2)
+}
+
 func TestMulf(t *testing.T) {
 	var fixtures = []struct {
 		money      Money

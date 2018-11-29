@@ -109,6 +109,9 @@ func DecimalChange(d int) {
 
 // Divides one Money type from another.
 func (m Money) Div(n Money) Money {
+	if n.M == 0 {
+		panic(ErrMoneyDivideByZero)
+	}
 	f := Guardf * DPf * float64(m.M) / float64(n.M) / Guardf
 	i := int64(f)
 	return Money{C: m.C, M: Rnd(i, f-float64(i))}
