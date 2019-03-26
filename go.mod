@@ -1,1 +1,1 @@
-module github.com/reillywatson/i18n-go
+module github.com/reillywatson/i18n
