@@ -6,15 +6,15 @@ import (
 
 func TestCurrencies(t *testing.T) {
 	var tests = []struct {
-		code         string
+		code         CurrencyCode
 		found        bool
-		expectedCode string
+		expectedCode CurrencyCode
 	}{
 		/* 0 */ {"XYZ", false, ""},
-		/* 1 */ {"EUR", true, "EUR"},
-		/* 2 */ {"CHF", true, "CHF"},
-		/* 3 */ {"USD", true, "USD"},
-		/* 4 */ {"CNY", true, "CNY"},
+		/* 1 */ {EUR, true, "EUR"},
+		/* 2 */ {CHF, true, "CHF"},
+		/* 3 */ {USD, true, "USD"},
+		/* 4 */ {CNY, true, "CNY"},
 	}
 
 	for i, f := range tests {
@@ -29,6 +29,24 @@ func TestCurrencies(t *testing.T) {
 			if f.expectedCode != c.Code {
 				t.Errorf("%d. expected Code to be %v, got %v", i, f.expectedCode, c.Code)
 			}
+		}
+	}
+}
+
+func TestCurrencyForCountryCode(t *testing.T) {
+	var tests = []struct {
+		code string
+		exp  CurrencyCode
+	}{
+		{"CA", CAD},
+		{"US", USD},
+		{"IE", EUR},
+		{"XY", ""},
+	}
+	for _, test := range tests {
+		got := CurrencyForCountryCode(test.code)
+		if got != test.exp {
+			t.Errorf("Got %s, expected %s", got, test.exp)
 		}
 	}
 }

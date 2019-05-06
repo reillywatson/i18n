@@ -6514,108 +6514,214 @@ var Territories = map[string]*Territory{
 	},
 }
 
-var Currencies = map[string]*Currency{
-	"AED": &Currency{Code: "AED", Symbol: "د.إ.‏"},
-	"AFN": &Currency{Code: "AFN", Symbol: "؋"},
-	"ALL": &Currency{Code: "ALL", Symbol: "Lek"},
-	"AMD": &Currency{Code: "AMD", Symbol: "դր."},
-	"ARS": &Currency{Code: "ARS", Symbol: "$"},
-	"AUD": &Currency{Code: "AUD", Symbol: "$"},
-	"AZN": &Currency{Code: "AZN", Symbol: "man."},
-	"BAM": &Currency{Code: "BAM", Symbol: "KM"},
-	"BDT": &Currency{Code: "BDT", Symbol: "৳"},
-	"BGN": &Currency{Code: "BGN", Symbol: "лв."},
-	"BHD": &Currency{Code: "BHD", Symbol: "د.ب.‏"},
-	"BND": &Currency{Code: "BND", Symbol: "$"},
-	"BOB": &Currency{Code: "BOB", Symbol: "$b"},
-	"BRL": &Currency{Code: "BRL", Symbol: "R$"},
-	"BYR": &Currency{Code: "BYR", Symbol: "р."},
-	"BZD": &Currency{Code: "BZD", Symbol: "BZ$"},
-	"CAD": &Currency{Code: "CAD", Symbol: "$"},
-	"CHF": &Currency{Code: "CHF", Symbol: "fr."},
-	"CLP": &Currency{Code: "CLP", Symbol: "$"},
-	"CNY": &Currency{Code: "CNY", Symbol: "¥"},
-	"COP": &Currency{Code: "COP", Symbol: "$"},
-	"CRC": &Currency{Code: "CRC", Symbol: "₡"},
-	"CSD": &Currency{Code: "CSD", Symbol: "Din."},
-	"CZK": &Currency{Code: "CZK", Symbol: "Kč"},
-	"DKK": &Currency{Code: "DKK", Symbol: "kr."},
-	"DOP": &Currency{Code: "DOP", Symbol: "RD$"},
-	"DZD": &Currency{Code: "DZD", Symbol: "DZD"},
-	"EEK": &Currency{Code: "EEK", Symbol: "kr"},
-	"EGP": &Currency{Code: "EGP", Symbol: "ج.م.‏"},
-	"ETB": &Currency{Code: "ETB", Symbol: "ETB"},
-	"EUR": &Currency{Code: "EUR", Symbol: "€"},
-	"GBP": &Currency{Code: "GBP", Symbol: "£"},
-	"GEL": &Currency{Code: "GEL", Symbol: "Lari"},
-	"GTQ": &Currency{Code: "GTQ", Symbol: "Q"},
-	"HKD": &Currency{Code: "HKD", Symbol: "HK$"},
-	"HNL": &Currency{Code: "HNL", Symbol: "L."},
-	"HRK": &Currency{Code: "HRK", Symbol: "kn"},
-	"HUF": &Currency{Code: "HUF", Symbol: "Ft"},
-	"IDR": &Currency{Code: "IDR", Symbol: "Rp"},
-	"ILS": &Currency{Code: "ILS", Symbol: "₪"},
-	"INR": &Currency{Code: "INR", Symbol: "रु"},
-	"IQD": &Currency{Code: "IQD", Symbol: "د.ع.‏"},
-	"IRR": &Currency{Code: "IRR", Symbol: "ريال"},
-	"ISK": &Currency{Code: "ISK", Symbol: "kr."},
-	"JMD": &Currency{Code: "JMD", Symbol: "J$"},
-	"JOD": &Currency{Code: "JOD", Symbol: "د.ا.‏"},
-	"JPY": &Currency{Code: "JPY", Symbol: "¥"},
-	"KES": &Currency{Code: "KES", Symbol: "S"},
-	"KGS": &Currency{Code: "KGS", Symbol: "сом"},
-	"KHR": &Currency{Code: "KHR", Symbol: "៛"},
-	"KRW": &Currency{Code: "KRW", Symbol: "₩"},
-	"KWD": &Currency{Code: "KWD", Symbol: "د.ك.‏"},
-	"KZT": &Currency{Code: "KZT", Symbol: "Т"},
-	"LAK": &Currency{Code: "LAK", Symbol: "₭"},
-	"LBP": &Currency{Code: "LBP", Symbol: "ل.ل.‏"},
-	"LKR": &Currency{Code: "LKR", Symbol: "රු."},
-	"LTL": &Currency{Code: "LTL", Symbol: "Lt"},
-	"LVL": &Currency{Code: "LVL", Symbol: "Ls"},
-	"LYD": &Currency{Code: "LYD", Symbol: "د.ل.‏"},
-	"MAD": &Currency{Code: "MAD", Symbol: "د.م.‏"},
-	"MKD": &Currency{Code: "MKD", Symbol: "ден."},
-	"MNT": &Currency{Code: "MNT", Symbol: "₮"},
-	"MOP": &Currency{Code: "MOP", Symbol: "MOP"},
-	"MVR": &Currency{Code: "MVR", Symbol: "ރ."},
-	"MXN": &Currency{Code: "MXN", Symbol: "$"},
-	"MYR": &Currency{Code: "MYR", Symbol: "RM"},
-	"NIO": &Currency{Code: "NIO", Symbol: "N"},
-	"NOK": &Currency{Code: "NOK", Symbol: "kr"},
-	"NPR": &Currency{Code: "NPR", Symbol: "रु"},
-	"NZD": &Currency{Code: "NZD", Symbol: "$"},
-	"OMR": &Currency{Code: "OMR", Symbol: "ر.ع.‏"},
-	"PAB": &Currency{Code: "PAB", Symbol: "B/."},
-	"PEN": &Currency{Code: "PEN", Symbol: "S/."},
-	"PHP": &Currency{Code: "PHP", Symbol: "PhP"},
-	"PKR": &Currency{Code: "PKR", Symbol: "Rs"},
-	"PLN": &Currency{Code: "PLN", Symbol: "zł"},
-	"PYG": &Currency{Code: "PYG", Symbol: "Gs"},
-	"QAR": &Currency{Code: "QAR", Symbol: "ر.ق.‏"},
-	"RON": &Currency{Code: "RON", Symbol: "lei"},
-	"RSD": &Currency{Code: "RSD", Symbol: "Din."},
-	"RUB": &Currency{Code: "RUB", Symbol: "р."},
-	"RWF": &Currency{Code: "RWF", Symbol: "RWF"},
-	"SAR": &Currency{Code: "SAR", Symbol: "ر.س.‏"},
-	"SEK": &Currency{Code: "SEK", Symbol: "kr"},
-	"SGD": &Currency{Code: "SGD", Symbol: "$"},
-	"SYP": &Currency{Code: "SYP", Symbol: "ل.س.‏"},
-	"THB": &Currency{Code: "THB", Symbol: "฿"},
-	"TJS": &Currency{Code: "TJS", Symbol: "т.р."},
-	"TMT": &Currency{Code: "TMT", Symbol: "m."},
-	"TND": &Currency{Code: "TND", Symbol: "د.ت.‏"},
-	"TRY": &Currency{Code: "TRY", Symbol: "TL"},
-	"TTD": &Currency{Code: "TTD", Symbol: "TT$"},
-	"TWD": &Currency{Code: "TWD", Symbol: "NT$"},
-	"UAH": &Currency{Code: "UAH", Symbol: "₴"},
-	"USD": &Currency{Code: "USD", Symbol: "$"},
-	"UYU": &Currency{Code: "UYU", Symbol: "$U"},
-	"UZS": &Currency{Code: "UZS", Symbol: "so'm"},
-	"VEF": &Currency{Code: "VEF", Symbol: "Bs. F."},
-	"VND": &Currency{Code: "VND", Symbol: "₫"},
-	"XOF": &Currency{Code: "XOF", Symbol: "XOF"},
-	"YER": &Currency{Code: "YER", Symbol: "ر.ي.‏"},
-	"ZAR": &Currency{Code: "ZAR", Symbol: "R"},
-	"ZWL": &Currency{Code: "ZWL", Symbol: "Z$"},
+const (
+	AED CurrencyCode = "AED"
+	AFN CurrencyCode = "AFN"
+	ALL CurrencyCode = "ALL"
+	AMD CurrencyCode = "AMD"
+	ARS CurrencyCode = "ARS"
+	AUD CurrencyCode = "AUD"
+	AZN CurrencyCode = "AZN"
+	BAM CurrencyCode = "BAM"
+	BDT CurrencyCode = "BDT"
+	BGN CurrencyCode = "BGN"
+	BHD CurrencyCode = "BHD"
+	BND CurrencyCode = "BND"
+	BOB CurrencyCode = "BOB"
+	BRL CurrencyCode = "BRL"
+	BYR CurrencyCode = "BYR"
+	BZD CurrencyCode = "BZD"
+	CAD CurrencyCode = "CAD"
+	CHF CurrencyCode = "CHF"
+	CLP CurrencyCode = "CLP"
+	CNY CurrencyCode = "CNY"
+	COP CurrencyCode = "COP"
+	CRC CurrencyCode = "CRC"
+	CSD CurrencyCode = "CSD"
+	CZK CurrencyCode = "CZK"
+	DKK CurrencyCode = "DKK"
+	DOP CurrencyCode = "DOP"
+	DZD CurrencyCode = "DZD"
+	EEK CurrencyCode = "EEK"
+	EGP CurrencyCode = "EGP"
+	ETB CurrencyCode = "ETB"
+	EUR CurrencyCode = "EUR"
+	GBP CurrencyCode = "GBP"
+	GEL CurrencyCode = "GEL"
+	GTQ CurrencyCode = "GTQ"
+	HKD CurrencyCode = "HKD"
+	HNL CurrencyCode = "HNL"
+	HRK CurrencyCode = "HRK"
+	HUF CurrencyCode = "HUF"
+	IDR CurrencyCode = "IDR"
+	ILS CurrencyCode = "ILS"
+	INR CurrencyCode = "INR"
+	IQD CurrencyCode = "IQD"
+	IRR CurrencyCode = "IRR"
+	ISK CurrencyCode = "ISK"
+	JMD CurrencyCode = "JMD"
+	JOD CurrencyCode = "JOD"
+	JPY CurrencyCode = "JPY"
+	KES CurrencyCode = "KES"
+	KGS CurrencyCode = "KGS"
+	KHR CurrencyCode = "KHR"
+	KRW CurrencyCode = "KRW"
+	KWD CurrencyCode = "KWD"
+	KZT CurrencyCode = "KZT"
+	LAK CurrencyCode = "LAK"
+	LBP CurrencyCode = "LBP"
+	LKR CurrencyCode = "LKR"
+	LTL CurrencyCode = "LTL"
+	LVL CurrencyCode = "LVL"
+	LYD CurrencyCode = "LYD"
+	MAD CurrencyCode = "MAD"
+	MKD CurrencyCode = "MKD"
+	MNT CurrencyCode = "MNT"
+	MOP CurrencyCode = "MOP"
+	MVR CurrencyCode = "MVR"
+	MXN CurrencyCode = "MXN"
+	MYR CurrencyCode = "MYR"
+	NIO CurrencyCode = "NIO"
+	NOK CurrencyCode = "NOK"
+	NPR CurrencyCode = "NPR"
+	NZD CurrencyCode = "NZD"
+	OMR CurrencyCode = "OMR"
+	PAB CurrencyCode = "PAB"
+	PEN CurrencyCode = "PEN"
+	PHP CurrencyCode = "PHP"
+	PKR CurrencyCode = "PKR"
+	PLN CurrencyCode = "PLN"
+	PYG CurrencyCode = "PYG"
+	QAR CurrencyCode = "QAR"
+	RON CurrencyCode = "RON"
+	RSD CurrencyCode = "RSD"
+	RUB CurrencyCode = "RUB"
+	RWF CurrencyCode = "RWF"
+	SAR CurrencyCode = "SAR"
+	SEK CurrencyCode = "SEK"
+	SGD CurrencyCode = "SGD"
+	SYP CurrencyCode = "SYP"
+	THB CurrencyCode = "THB"
+	TJS CurrencyCode = "TJS"
+	TMT CurrencyCode = "TMT"
+	TND CurrencyCode = "TND"
+	TRY CurrencyCode = "TRY"
+	TTD CurrencyCode = "TTD"
+	TWD CurrencyCode = "TWD"
+	UAH CurrencyCode = "UAH"
+	USD CurrencyCode = "USD"
+	UYU CurrencyCode = "UYU"
+	UZS CurrencyCode = "UZS"
+	VEF CurrencyCode = "VEF"
+	VND CurrencyCode = "VND"
+	XOF CurrencyCode = "XOF"
+	YER CurrencyCode = "YER"
+	ZAR CurrencyCode = "ZAR"
+	ZWL CurrencyCode = "ZWL"
+)
+
+var Currencies = map[CurrencyCode]*Currency{
+	AED: &Currency{Code: "AED", Symbol: "د.إ.‏"},
+	AFN: &Currency{Code: "AFN", Symbol: "؋"},
+	ALL: &Currency{Code: "ALL", Symbol: "Lek"},
+	AMD: &Currency{Code: "AMD", Symbol: "դր."},
+	ARS: &Currency{Code: "ARS", Symbol: "$"},
+	AUD: &Currency{Code: "AUD", Symbol: "$"},
+	AZN: &Currency{Code: "AZN", Symbol: "man."},
+	BAM: &Currency{Code: "BAM", Symbol: "KM"},
+	BDT: &Currency{Code: "BDT", Symbol: "৳"},
+	BGN: &Currency{Code: "BGN", Symbol: "лв."},
+	BHD: &Currency{Code: "BHD", Symbol: "د.ب.‏"},
+	BND: &Currency{Code: "BND", Symbol: "$"},
+	BOB: &Currency{Code: "BOB", Symbol: "$b"},
+	BRL: &Currency{Code: "BRL", Symbol: "R$"},
+	BYR: &Currency{Code: "BYR", Symbol: "р."},
+	BZD: &Currency{Code: "BZD", Symbol: "BZ$"},
+	CAD: &Currency{Code: "CAD", Symbol: "$"},
+	CHF: &Currency{Code: "CHF", Symbol: "fr."},
+	CLP: &Currency{Code: "CLP", Symbol: "$"},
+	CNY: &Currency{Code: "CNY", Symbol: "¥"},
+	COP: &Currency{Code: "COP", Symbol: "$"},
+	CRC: &Currency{Code: "CRC", Symbol: "₡"},
+	CSD: &Currency{Code: "CSD", Symbol: "Din."},
+	CZK: &Currency{Code: "CZK", Symbol: "Kč"},
+	DKK: &Currency{Code: "DKK", Symbol: "kr."},
+	DOP: &Currency{Code: "DOP", Symbol: "RD$"},
+	DZD: &Currency{Code: "DZD", Symbol: "DZD"},
+	EEK: &Currency{Code: "EEK", Symbol: "kr"},
+	EGP: &Currency{Code: "EGP", Symbol: "ج.م.‏"},
+	ETB: &Currency{Code: "ETB", Symbol: "ETB"},
+	EUR: &Currency{Code: "EUR", Symbol: "€"},
+	GBP: &Currency{Code: "GBP", Symbol: "£"},
+	GEL: &Currency{Code: "GEL", Symbol: "Lari"},
+	GTQ: &Currency{Code: "GTQ", Symbol: "Q"},
+	HKD: &Currency{Code: "HKD", Symbol: "HK$"},
+	HNL: &Currency{Code: "HNL", Symbol: "L."},
+	HRK: &Currency{Code: "HRK", Symbol: "kn"},
+	HUF: &Currency{Code: "HUF", Symbol: "Ft"},
+	IDR: &Currency{Code: "IDR", Symbol: "Rp"},
+	ILS: &Currency{Code: "ILS", Symbol: "₪"},
+	INR: &Currency{Code: "INR", Symbol: "रु"},
+	IQD: &Currency{Code: "IQD", Symbol: "د.ع.‏"},
+	IRR: &Currency{Code: "IRR", Symbol: "ريال"},
+	ISK: &Currency{Code: "ISK", Symbol: "kr."},
+	JMD: &Currency{Code: "JMD", Symbol: "J$"},
+	JOD: &Currency{Code: "JOD", Symbol: "د.ا.‏"},
+	JPY: &Currency{Code: "JPY", Symbol: "¥"},
+	KES: &Currency{Code: "KES", Symbol: "S"},
+	KGS: &Currency{Code: "KGS", Symbol: "сом"},
+	KHR: &Currency{Code: "KHR", Symbol: "៛"},
+	KRW: &Currency{Code: "KRW", Symbol: "₩"},
+	KWD: &Currency{Code: "KWD", Symbol: "د.ك.‏"},
+	KZT: &Currency{Code: "KZT", Symbol: "Т"},
+	LAK: &Currency{Code: "LAK", Symbol: "₭"},
+	LBP: &Currency{Code: "LBP", Symbol: "ل.ل.‏"},
+	LKR: &Currency{Code: "LKR", Symbol: "රු."},
+	LTL: &Currency{Code: "LTL", Symbol: "Lt"},
+	LVL: &Currency{Code: "LVL", Symbol: "Ls"},
+	LYD: &Currency{Code: "LYD", Symbol: "د.ل.‏"},
+	MAD: &Currency{Code: "MAD", Symbol: "د.م.‏"},
+	MKD: &Currency{Code: "MKD", Symbol: "ден."},
+	MNT: &Currency{Code: "MNT", Symbol: "₮"},
+	MOP: &Currency{Code: "MOP", Symbol: "MOP"},
+	MVR: &Currency{Code: "MVR", Symbol: "ރ."},
+	MXN: &Currency{Code: "MXN", Symbol: "$"},
+	MYR: &Currency{Code: "MYR", Symbol: "RM"},
+	NIO: &Currency{Code: "NIO", Symbol: "N"},
+	NOK: &Currency{Code: "NOK", Symbol: "kr"},
+	NPR: &Currency{Code: "NPR", Symbol: "रु"},
+	NZD: &Currency{Code: "NZD", Symbol: "$"},
+	OMR: &Currency{Code: "OMR", Symbol: "ر.ع.‏"},
+	PAB: &Currency{Code: "PAB", Symbol: "B/."},
+	PEN: &Currency{Code: "PEN", Symbol: "S/."},
+	PHP: &Currency{Code: "PHP", Symbol: "PhP"},
+	PKR: &Currency{Code: "PKR", Symbol: "Rs"},
+	PLN: &Currency{Code: "PLN", Symbol: "zł"},
+	PYG: &Currency{Code: "PYG", Symbol: "Gs"},
+	QAR: &Currency{Code: "QAR", Symbol: "ر.ق.‏"},
+	RON: &Currency{Code: "RON", Symbol: "lei"},
+	RSD: &Currency{Code: "RSD", Symbol: "Din."},
+	RUB: &Currency{Code: "RUB", Symbol: "р."},
+	RWF: &Currency{Code: "RWF", Symbol: "RWF"},
+	SAR: &Currency{Code: "SAR", Symbol: "ر.س.‏"},
+	SEK: &Currency{Code: "SEK", Symbol: "kr"},
+	SGD: &Currency{Code: "SGD", Symbol: "$"},
+	SYP: &Currency{Code: "SYP", Symbol: "ل.س.‏"},
+	THB: &Currency{Code: "THB", Symbol: "฿"},
+	TJS: &Currency{Code: "TJS", Symbol: "т.р."},
+	TMT: &Currency{Code: "TMT", Symbol: "m."},
+	TND: &Currency{Code: "TND", Symbol: "د.ت.‏"},
+	TRY: &Currency{Code: "TRY", Symbol: "TL"},
+	TTD: &Currency{Code: "TTD", Symbol: "TT$"},
+	TWD: &Currency{Code: "TWD", Symbol: "NT$"},
+	UAH: &Currency{Code: "UAH", Symbol: "₴"},
+	USD: &Currency{Code: "USD", Symbol: "$"},
+	UYU: &Currency{Code: "UYU", Symbol: "$U"},
+	UZS: &Currency{Code: "UZS", Symbol: "so'm"},
+	VEF: &Currency{Code: "VEF", Symbol: "Bs. F."},
+	VND: &Currency{Code: "VND", Symbol: "₫"},
+	XOF: &Currency{Code: "XOF", Symbol: "XOF"},
+	YER: &Currency{Code: "YER", Symbol: "ر.ي.‏"},
+	ZAR: &Currency{Code: "ZAR", Symbol: "R"},
+	ZWL: &Currency{Code: "ZWL", Symbol: "Z$"},
 }

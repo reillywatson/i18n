@@ -11,7 +11,7 @@ func TestLocales(t *testing.T) {
 		expectedLanguage  string
 		expectedLangISO3  string
 		expectedTerritory string
-		expectedCurrCode  string
+		expectedCurrCode  CurrencyCode
 	}{
 		/*  0 */ {"xy", false, "", "", "", ""},
 		/*  1 */ {"de", false, "", "", "", ""},

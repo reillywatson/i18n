@@ -45,12 +45,30 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestAddYen(t *testing.T) {
+	m1 := Money{123, JPY}
+	m2 := Money{456, JPY}
+	m3 := m1.Add(m2)
+	if m3.Get() != 579 {
+		t.Errorf("expected money amount to be 579, got %v", m3.Get())
+	}
+}
+
 func TestMul(t *testing.T) {
 	m1 := Money{123, "EUR"}
 	m2 := Money{200, "EUR"}
 	m3 := m1.Mul(m2)
 	if m3.Get() != 2.46 {
 		t.Errorf("expected money amount to be %v, got %v", 2.46, m3.Get())
+	}
+}
+
+func TestMulYen(t *testing.T) {
+	m1 := Money{123, JPY}
+	m2 := Money{2, JPY}
+	m3 := m1.Mul(m2)
+	if m3.Get() != 246 {
+		t.Errorf("expected money amount to be 246, got %v", m3.Get())
 	}
 }
 
@@ -69,6 +87,14 @@ func TestDiv(t *testing.T) {
 	m3 = m1.Div(m2)
 	if m3.Get() != 6.67 {
 		t.Errorf("expected money amount to be %v, got %v", 6.67, m3.Get())
+	}
+
+	// Rational number with repeating decimals get truncated and rounded to 0 decimals
+	m1 = Money{2000, JPY}
+	m2 = Money{300, JPY}
+	m3 = m1.Div(m2)
+	if m3.Get() != 7 {
+		t.Errorf("expected money amount to be %v, got %v", 7, m3.Get())
 	}
 
 	// Should panic when dividing by zero

@@ -1,5 +1,7 @@
 package i18n
 
+type CurrencyCode string
+
 // Locale contains all information about a locale.
 type Locale struct {
 	// Code is the ISO code of the locale in the xx_YY format, e.g. de_AT.
@@ -12,7 +14,7 @@ type Locale struct {
 	Territory string
 	// CurrencyCode is the 3-letter, upcase ISO code of the currency
 	// in the locale, e.g. EUR for Germany.
-	CurrencyCode string
+	CurrencyCode CurrencyCode
 	// CurrencySymbol is the symbol used in the locale, e.g. € for Euro.
 	CurrencySymbol string
 	// CurrencyDecimalDigits is the number of digits after the decimal point.

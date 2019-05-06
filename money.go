@@ -15,7 +15,7 @@ import (
 
 type Money struct {
 	M int64
-	C string
+	C CurrencyCode
 }
 
 var (
@@ -24,23 +24,18 @@ var (
 	ErrMoneyDecimalPlacesTooLarge = errors.New("i18n: money decimal places too large")
 	ErrMoneyCannotSplit           = errors.New("i18n: cannot split money into more chunks than cents in total")
 	ErrMoneyZeroOrLessChunks      = errors.New("i18n: cannot split money into zero or less chunks")
-
-	Guardi int     = 100
-	Guardf float64 = float64(Guardi)
-	DP     int64   = 100         // for default of 2 decimal places => 10^2 (can be reset)
-	DPf    float64 = float64(DP) // for default of 2 decimal places => 10^2 (can be reset)
-	Round          = .5
-	Roundn         = Round * -1
 )
 
 const (
 	MAXDEC = 18
+	Round  = .5
+	Roundn = Round * -1
 )
 
 type moneyMarshalContainer struct {
-	M int64   `json:"M"`
-	C string  `json:"C"`
-	F float64 `json:"F"`
+	M int64        `json:"M"`
+	C CurrencyCode `json:"C"`
+	F float64      `json:"F"`
 }
 
 func (m Money) MarshalJSON() ([]byte, error) {
@@ -64,9 +59,10 @@ func (m *Money) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func MakeMoney(currency string, amount float64) Money {
-	fDPf := amount * DPf
-	r := int64(amount * DPf)
+func MakeMoney(currency CurrencyCode, amount float64) Money {
+	dpf := Money{C: currency}.dpf()
+	fDPf := amount * dpf
+	r := int64(amount * dpf)
 	return Money{C: currency, M: Rnd(r, fDPf-float64(r))}
 }
 
@@ -87,32 +83,13 @@ func (m Money) Add(n Money) Money {
 	return Money{C: m.C, M: r}
 }
 
-// Resets the package-wide decimal place (default is 2 decimal places).
-func DecimalChange(d int) {
-	if d < 0 {
-		panic(ErrMoneyDivideByZero)
-	}
-	if d > MAXDEC {
-		panic(ErrMoneyDecimalPlacesTooLarge)
-	}
-	var newDecimal int
-	if d > 0 {
-		newDecimal++
-		for i := 0; i < d; i++ {
-			newDecimal *= 10
-		}
-	}
-	DPf = float64(newDecimal)
-	DP = int64(newDecimal)
-	return
-}
-
 // Divides one Money type from another.
 func (m Money) Div(n Money) Money {
 	if n.M == 0 {
 		panic(ErrMoneyDivideByZero)
 	}
-	f := Guardf * DPf * float64(m.M) / float64(n.M) / Guardf
+	guardf := 100.0
+	f := guardf * m.dpf() * float64(m.M) / float64(n.M) / guardf
 	i := int64(f)
 	return Money{C: m.C, M: Rnd(i, f-float64(i))}
 }
@@ -144,19 +121,35 @@ func (m Money) Split(chunks int64) []Money {
 	return result
 }
 
+// rounding value, expressed as 10^N where N is the number of decimal places
+// (ie 2 decimals places == 10^2 == 100)
+func (m Money) dp() int64 {
+	for _, loc := range Locales {
+		if loc.CurrencyCode == m.C {
+			return int64(math.Pow10(loc.CurrencyDecimalDigits))
+		}
+	}
+	return 100
+}
+
+// number of decimal places to use for rounding (float verison)
+func (m Money) dpf() float64 {
+	return float64(m.dp())
+}
+
 // Gets value of money truncating after DP (see Value() for no truncation).
 func (m Money) Gett() int64 {
-	return m.M / DP
+	return m.M / m.dp()
 }
 
 // Gets the float64 value of money (see Value() for int64).
 func (m Money) Get() float64 {
-	return float64(m.M) / DPf
+	return float64(m.M) / m.dpf()
 }
 
 // Multiplies two Money types.
 func (m Money) Mul(n Money) Money {
-	return Money{C: m.C, M: m.M * n.M / DP}
+	return Money{C: m.C, M: m.M * n.M / m.dp()}
 }
 
 // Multiplies a Money with a float to return a money-stored type.
@@ -211,10 +204,10 @@ func (m Money) Sign() int {
 // String for money type representation in basic monetary unit (DOLLARS CENTS).
 func (m Money) String() string {
 	if m.Sign() > 0 {
-		return fmt.Sprintf("%d.%02d %s", m.Value()/DP, m.Value()%DP, m.C)
+		return fmt.Sprintf("%d.%02d %s", m.Value()/m.dp(), m.Value()%m.dp(), m.C)
 	}
 	// Negative value
-	return fmt.Sprintf("-%d.%02d %s", m.Abs().Value()/DP, m.Abs().Value()%DP, m.C)
+	return fmt.Sprintf("-%d.%02d %s", m.Abs().Value()/m.dp(), m.Abs().Value()%m.dp(), m.C)
 }
 
 func (m Money) Format(locale string) string {
@@ -226,7 +219,7 @@ func (m Money) Format(locale string) string {
 	}
 
 	// DP is a measure for decimals: 2 decimal digits => dp = 10^2
-	currencySymbol := m.C
+	currencySymbol := string(m.C)
 	curr, found := Currencies[m.C]
 	if found {
 		currencySymbol = curr.Symbol
