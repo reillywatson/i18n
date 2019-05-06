@@ -15,7 +15,7 @@ import (
 
 type Money struct {
 	M int64
-	C CurrencyCode
+	C string
 }
 
 var (
@@ -33,9 +33,9 @@ const (
 )
 
 type moneyMarshalContainer struct {
-	M int64        `json:"M"`
-	C CurrencyCode `json:"C"`
-	F float64      `json:"F"`
+	M int64   `json:"M"`
+	C string  `json:"C"`
+	F float64 `json:"F"`
 }
 
 func (m Money) MarshalJSON() ([]byte, error) {
@@ -59,7 +59,7 @@ func (m *Money) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func MakeMoney(currency CurrencyCode, amount float64) Money {
+func MakeMoney(currency string, amount float64) Money {
 	dpf := Money{C: currency}.dpf()
 	fDPf := amount * dpf
 	r := int64(amount * dpf)
@@ -125,7 +125,7 @@ func (m Money) Split(chunks int64) []Money {
 // (ie 2 decimals places == 10^2 == 100)
 func (m Money) dp() int64 {
 	for _, loc := range Locales {
-		if loc.CurrencyCode == m.C {
+		if string(loc.CurrencyCode) == m.C {
 			return int64(math.Pow10(loc.CurrencyDecimalDigits))
 		}
 	}
@@ -220,7 +220,7 @@ func (m Money) Format(locale string) string {
 
 	// DP is a measure for decimals: 2 decimal digits => dp = 10^2
 	currencySymbol := string(m.C)
-	curr, found := Currencies[m.C]
+	curr, found := Currencies[CurrencyCode(m.C)]
 	if found {
 		currencySymbol = curr.Symbol
 	}
