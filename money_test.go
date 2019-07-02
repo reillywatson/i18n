@@ -98,21 +98,20 @@ func TestDiv(t *testing.T) {
 			money2:    Money{300, "JPY"},
 			expResult: Money{7, "JPY"},
 		},
-		// PAY-355: three tests below are testing the workaround for finding per pay period amounts!
 		{
-			name:      "Rational number with third decimal place at 5 gets rounded correctly",
+			name:      "Rational number requiring truncation rounded correctly",
 			money1:    Money{21252, "CAD"},
 			money2:    MakeMoney("CAD", 24),
 			expResult: Money{886, "CAD"},
 		},
 		{
-			name:      "Rational number with third decimal place at 5 gets rounded correctly, second",
-			money1:    Money{22668, "CAD"},
-			money2:    MakeMoney("CAD", 24),
-			expResult: Money{945, "CAD"},
+			name:      "Rational number requiring truncation rounded correctly, second test",
+			money1:    Money{22668, "USD"},
+			money2:    MakeMoney("USD", 24),
+			expResult: Money{945, "USD"},
 		},
 		{
-			name:      "Rational number is divided correctly",
+			name:      "Rational number not requiring truncation is divided correctly",
 			money1:    Money{90672, "CAD"},
 			money2:    MakeMoney("CAD", 24),
 			expResult: Money{3778, "CAD"},
