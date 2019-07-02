@@ -73,39 +73,76 @@ func TestMulYen(t *testing.T) {
 }
 
 func TestDiv(t *testing.T) {
-	// Rational number with repeating decimals get truncated to 2 decimals
-	m1 := Money{1000, "EUR"}
-	m2 := Money{300, "EUR"}
-	m3 := m1.Div(m2)
-	if m3.Get() != 3.33 {
-		t.Errorf("expected money amount to be %v, got %v", 3.33, m3.Get())
+	tests := []struct {
+		name      string
+		money1    Money
+		money2    Money
+		expResult Money
+		expPanic  bool
+	}{
+		{
+			name:      "Rational number with repeating decimals get truncated to 2 decimals",
+			money1:    Money{1000, "EUR"},
+			money2:    Money{300, "EUR"},
+			expResult: Money{333, "EUR"},
+		},
+		{
+			name:      "Rational number with repeating decimals get truncated and rounded to 2 decimals",
+			money1:    Money{2000, "EUR"},
+			money2:    Money{300, "EUR"},
+			expResult: Money{667, "EUR"},
+		},
+		{
+			name:      "Rational number with repeating decimals get truncated and rounded to 0 decimals",
+			money1:    Money{2000, "JPY"},
+			money2:    Money{300, "JPY"},
+			expResult: Money{7, "JPY"},
+		},
+		// PAY-355: three tests below are testing the workaround for finding per pay period amounts!
+		{
+			name:      "Rational number with third decimal place at 5 gets rounded correctly",
+			money1:    Money{21252, "CAD"},
+			money2:    MakeMoney("CAD", 24),
+			expResult: Money{886, "CAD"},
+		},
+		{
+			name:      "Rational number with third decimal place at 5 gets rounded correctly, second",
+			money1:    Money{22668, "CAD"},
+			money2:    MakeMoney("CAD", 24),
+			expResult: Money{945, "CAD"},
+		},
+		{
+			name:      "Rational number is divided correctly",
+			money1:    Money{90672, "CAD"},
+			money2:    MakeMoney("CAD", 24),
+			expResult: Money{3778, "CAD"},
+		},
+		// Testing for division by invalid numbers or amounts
+		{
+			name:      "Should panic when dividing by zero",
+			money1:    Money{10, "CAD"},
+			money2:    MakeMoney("CAD", 0),
+			expResult: Money{0, "CAD"},
+			expPanic:  true,
+		},
 	}
 
-	// Rational number with repeating decimals get truncated and rounded to 2 decimals
-	m1 = Money{2000, "EUR"}
-	m2 = Money{300, "EUR"}
-	m3 = m1.Div(m2)
-	if m3.Get() != 6.67 {
-		t.Errorf("expected money amount to be %v, got %v", 6.67, m3.Get())
-	}
-
-	// Rational number with repeating decimals get truncated and rounded to 0 decimals
-	m1 = Money{2000, "JPY"}
-	m2 = Money{300, "JPY"}
-	m3 = m1.Div(m2)
-	if m3.Get() != 7 {
-		t.Errorf("expected money amount to be %v, got %v", 7, m3.Get())
-	}
-
-	// Should panic when dividing by zero
-	m1 = Money{10, "EUR"}
-	m2 = Money{0, "EUR"}
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("Division by zero, should have paniced!")
+	for _, test := range tests {
+		// Used for catching panics from dividing by 0!
+		if test.expPanic {
+			defer func() {
+				if r := recover(); r == nil {
+					t.Errorf("%s: Division by zero, should have paniced!", test.name)
+				}
+			}()
 		}
-	}()
-	m1.Div(m2)
+
+		got := test.money1.Div(test.money2)
+
+		if !test.expPanic && !reflect.DeepEqual(test.expResult, got) {
+			t.Errorf("%s: expected money amount to be %v, got %v", test.name, test.expResult, got)
+		}
+	}
 }
 
 func TestMulf(t *testing.T) {
