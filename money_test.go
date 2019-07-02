@@ -46,8 +46,8 @@ func TestAdd(t *testing.T) {
 }
 
 func TestAddYen(t *testing.T) {
-	m1 := Money{123, "JPY"}
-	m2 := Money{456, "JPY"}
+	m1 := Money{123, JPY}
+	m2 := Money{456, JPY}
 	m3 := m1.Add(m2)
 	if m3.Get() != 579 {
 		t.Errorf("expected money amount to be 579, got %v", m3.Get())
@@ -64,8 +64,8 @@ func TestMul(t *testing.T) {
 }
 
 func TestMulYen(t *testing.T) {
-	m1 := Money{123, "JPY"}
-	m2 := Money{2, "JPY"}
+	m1 := Money{123, JPY}
+	m2 := Money{2, JPY}
 	m3 := m1.Mul(m2)
 	if m3.Get() != 246 {
 		t.Errorf("expected money amount to be 246, got %v", m3.Get())
@@ -90,8 +90,8 @@ func TestDiv(t *testing.T) {
 	}
 
 	// Rational number with repeating decimals get truncated and rounded to 0 decimals
-	m1 = Money{2000, "JPY"}
-	m2 = Money{300, "JPY"}
+	m1 = Money{2000, JPY}
+	m2 = Money{300, JPY}
 	m3 = m1.Div(m2)
 	if m3.Get() != 7 {
 		t.Errorf("expected money amount to be %v, got %v", 7, m3.Get())
@@ -115,9 +115,19 @@ func TestMulf(t *testing.T) {
 		expResult  float64
 	}{
 		{
-			money:      Money{123, "EUR"},
-			multiplier: 2.0,
-			expResult:  2.46,
+			money:      Money{5666, "USD"},
+			multiplier: 1.0 / 6,
+			expResult:  9.44,
+		},
+		{
+			money:      Money{5667, "USD"},
+			multiplier: 1.0 / 6,
+			expResult:  9.45,
+		},
+		{
+			money:      Money{5668, "USD"},
+			multiplier: 1.0 / 6,
+			expResult:  9.45,
 		},
 		{
 			money:      Money{1234, "EUR"},
@@ -138,6 +148,11 @@ func TestMulf(t *testing.T) {
 			money:      Money{123456, "EUR"},
 			multiplier: 7 / 12.0,
 			expResult:  720.16,
+		},
+		{
+			money:      Money{-123456, "EUR"},
+			multiplier: 7 / 12.0,
+			expResult:  -720.16,
 		},
 	}
 

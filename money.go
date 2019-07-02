@@ -15,7 +15,7 @@ import (
 
 type Money struct {
 	M int64
-	C string
+	C CurrencyCode
 }
 
 var (
@@ -33,9 +33,9 @@ const (
 )
 
 type moneyMarshalContainer struct {
-	M int64   `json:"M"`
-	C string  `json:"C"`
-	F float64 `json:"F"`
+	M int64        `json:"M"`
+	C CurrencyCode `json:"C"`
+	F float64      `json:"F"`
 }
 
 func (m Money) MarshalJSON() ([]byte, error) {
@@ -59,11 +59,11 @@ func (m *Money) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func MakeMoney(currency string, amount float64) Money {
+func MakeMoney(currency CurrencyCode, amount float64) Money {
 	dpf := Money{C: currency}.dpf()
 	fDPf := amount * dpf
 	r := int64(amount * dpf)
-	return Money{C: currency, M: Rnd(r, fDPf-float64(r))}
+	return Money{C: currency, M: rnd(r, fDPf-float64(r))}
 }
 
 // Returns the absolute value of Money.
@@ -91,7 +91,7 @@ func (m Money) Div(n Money) Money {
 	guardf := 100.0
 	f := guardf * m.dpf() * float64(m.M) / float64(n.M) / guardf
 	i := int64(f)
-	return Money{C: m.C, M: Rnd(i, f-float64(i))}
+	return Money{C: m.C, M: rnd(i, f-float64(i))}
 }
 
 // Splits the money amount into equal parts, up to 1 cent variation to not lose cents
@@ -125,7 +125,7 @@ func (m Money) Split(chunks int64) []Money {
 // (ie 2 decimals places == 10^2 == 100)
 func (m Money) dp() int64 {
 	for _, loc := range Locales {
-		if string(loc.CurrencyCode) == m.C {
+		if loc.CurrencyCode == m.C {
 			return int64(math.Pow10(loc.CurrencyDecimalDigits))
 		}
 	}
@@ -149,24 +149,13 @@ func (m Money) Get() float64 {
 
 // Multiplies two Money types.
 func (m Money) Mul(n Money) Money {
-	return Money{C: m.C, M: m.M * n.M / m.dp()}
+	return m.Mulf(n.Get())
 }
 
 // Multiplies a Money with a float to return a money-stored type.
 func (m Money) Mulf(f float64) Money {
-	guard := int64(10)
-	//calculate how many digits are in m.M
-	n := m.M
-	for n > 1 {
-		guard = guard * 10
-		n = n / 10
-	}
-	guardf := float64(guard)
-
-	i := m.M * int64(f*guardf)
-	r := i / guard
-
-	return Money{C: m.C, M: Rnd(r, float64(i)/guardf-float64(r))}
+	mf := m.Get()
+	return MakeMoney(m.C, f*mf)
 }
 
 // Returns the negative value of Money.
@@ -180,7 +169,7 @@ func (m Money) Neg() Money {
 // Rounds int64 remainder rounded half towards plus infinity
 // trunc = the remainder of the float64 calc
 // r     = the result of the int64 cal
-func Rnd(r int64, trunc float64) int64 {
+func rnd(r int64, trunc float64) int64 {
 	if trunc > 0 {
 		if trunc >= Round {
 			r++
@@ -220,7 +209,7 @@ func (m Money) Format(locale string) string {
 
 	// DP is a measure for decimals: 2 decimal digits => dp = 10^2
 	currencySymbol := string(m.C)
-	curr, found := Currencies[CurrencyCode(m.C)]
+	curr, found := Currencies[m.C]
 	if found {
 		currencySymbol = curr.Symbol
 	}
