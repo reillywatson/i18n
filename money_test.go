@@ -150,6 +150,11 @@ func TestMulf(t *testing.T) {
 		expResult  float64
 	}{
 		{
+			money:      Money{3390, "USD"},
+			multiplier: .75,
+			expResult:  25.43,
+		},
+		{
 			money:      Money{5666, "USD"},
 			multiplier: 1.0 / 6,
 			expResult:  9.44,

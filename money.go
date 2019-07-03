@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"math/big"
 	"strings"
 )
 
@@ -154,8 +155,8 @@ func (m Money) Mul(n Money) Money {
 
 // Multiplies a Money with a float to return a money-stored type.
 func (m Money) Mulf(f float64) Money {
-	mf := m.Get()
-	return MakeMoney(m.C, f*mf)
+	res, _ := big.NewFloat(m.Get()).SetMode(big.ToPositiveInf).Mul(big.NewFloat(m.Get()), big.NewFloat(f)).Float64()
+	return MakeMoney(m.C, res)
 }
 
 // Returns the negative value of Money.
