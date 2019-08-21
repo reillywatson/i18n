@@ -600,7 +600,7 @@ func TestJSONUnmarshal(t *testing.T) {
 	}{
 		{`{"C": "CAD","M": 500}`, Money{C: "CAD", M: 500}, true},
 		{`{"C": "CAD","F": 5}`, Money{C: "CAD", M: 500}, true},
-		{`{"C": "CAD","F": 5, "M": 1}`, Money{}, false},
+		{`{"C": "CAD","F": 5, "M": 1}`, Money{C: "CAD", M: 500}, true},
 	}
 	for _, test := range tests {
 		var m Money

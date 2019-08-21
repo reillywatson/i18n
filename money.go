@@ -34,13 +34,14 @@ const (
 )
 
 type moneyMarshalContainer struct {
-	M int64        `json:"M"`
+	M *int64       `json:"M"`
 	C CurrencyCode `json:"C"`
-	F float64      `json:"F"`
+	F *float64     `json:"F"`
 }
 
 func (m Money) MarshalJSON() ([]byte, error) {
-	return json.Marshal(moneyMarshalContainer{M: m.M, C: m.C, F: m.Get()})
+	f := m.Get()
+	return json.Marshal(moneyMarshalContainer{M: &m.M, C: m.C, F: &f})
 }
 
 func (m *Money) UnmarshalJSON(b []byte) error {
@@ -49,13 +50,12 @@ func (m *Money) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	if container.M != 0 && container.F != 0 && (Money{M: container.M, C: container.C}).Get() != container.F {
-		return errors.New("M and F were both specified, but they aren't equivalent")
-	}
 	m.C = container.C
-	m.M = container.M
-	if m.M == 0 && container.F != 0 {
-		*m = MakeMoney(m.C, container.F)
+	// prioritize the F value when unmarshalling over M
+	if container.F != nil {
+		*m = MakeMoney(m.C, *container.F)
+	} else if container.M != nil {
+		m.M = *container.M
 	}
 	return nil
 }
