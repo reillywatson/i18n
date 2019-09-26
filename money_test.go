@@ -45,6 +45,15 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestAddEmpty(t *testing.T) {
+	m1 := Money{}
+	m2 := Money{123, "EUR"}
+	m3 := m1.Add(m2)
+	if m3.C != "EUR" {
+		t.Errorf("expected currency to be EUR, got %v", m3.C)
+	}
+}
+
 func TestAddYen(t *testing.T) {
 	m1 := Money{123, JPY}
 	m2 := Money{456, JPY}

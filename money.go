@@ -77,6 +77,9 @@ func (m Money) Abs() Money {
 
 // Adds two money types.
 func (m Money) Add(n Money) Money {
+	if m.C == "" {
+		m.C = n.C
+	}
 	r := m.M + n.M
 	if (r^m.M)&(r^n.M) < 0 {
 		panic(ErrMoneyOverflow)
@@ -86,6 +89,9 @@ func (m Money) Add(n Money) Money {
 
 // Divides one Money type from another.
 func (m Money) Div(n Money) Money {
+	if m.C == "" {
+		m.C = n.C
+	}
 	if n.M == 0 {
 		panic(ErrMoneyDivideByZero)
 	}
@@ -150,6 +156,9 @@ func (m Money) Get() float64 {
 
 // Multiplies two Money types.
 func (m Money) Mul(n Money) Money {
+	if m.C == "" {
+		m.C = n.C
+	}
 	return m.Mulf(n.Get())
 }
 
@@ -298,6 +307,9 @@ func (m Money) Format(locale string) string {
 
 // Subtracts one Money type from another.
 func (m Money) Sub(n Money) Money {
+	if m.C == "" {
+		m.C = n.C
+	}
 	r := m.M - n.M
 	if (r^m.M)&^(r^n.M) < 0 {
 		panic(ErrMoneyOverflow)
