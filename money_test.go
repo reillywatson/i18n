@@ -623,3 +623,35 @@ func TestJSONUnmarshal(t *testing.T) {
 		}
 	}
 }
+
+func TestUnitAsString(t *testing.T) {
+	var fixtures = []struct {
+		m        Money
+		expected string
+	}{
+		{Money{0, "EUR"}, "0.00"},
+		{Money{1, "EUR"}, "0.01"},
+		{Money{12, "EUR"}, "0.12"},
+		{Money{123, "EUR"}, "1.23"},
+		{Money{1234, "EUR"}, "12.34"},
+		{Money{100000, "EUR"}, "1000.00"},
+		{Money{123456, "EUR"}, "1234.56"},
+		{Money{1234567, "EUR"}, "12345.67"},
+		{Money{1234567890, "EUR"}, "12345678.90"},
+		{Money{-1, "EUR"}, "-0.01"},
+		{Money{-12, "EUR"}, "-0.12"},
+		{Money{-123, "EUR"}, "-1.23"},
+		{Money{-1234, "EUR"}, "-12.34"},
+		{Money{-100000, "EUR"}, "-1000.00"},
+		{Money{-123456, "EUR"}, "-1234.56"},
+		{Money{-1234567, "EUR"}, "-12345.67"},
+		{Money{-1234567890, "EUR"}, "-12345678.90"},
+	}
+
+	for _, f := range fixtures {
+		got := f.m.UnitAsString()
+		if got != f.expected {
+			t.Errorf("expected %s, got %s", f.expected, got)
+		}
+	}
+}
