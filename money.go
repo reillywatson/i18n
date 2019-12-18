@@ -209,6 +209,15 @@ func (m Money) String() string {
 	return fmt.Sprintf("-%d.%02d %s", m.Abs().Value()/m.dp(), m.Abs().Value()%m.dp(), m.C)
 }
 
+// String for money type representation in basic monetary unit (DOLLARS CENTS) without currency.
+func (m Money) UnitAsString() string {
+	if m.Sign() > 0 {
+		return fmt.Sprintf("%d.%02d", m.Value()/m.dp(), m.Value()%m.dp())
+	}
+	// Negative value
+	return fmt.Sprintf("-%d.%02d", m.Abs().Value()/m.dp(), m.Abs().Value()%m.dp())
+}
+
 func (m Money) Format(locale string) string {
 	l, found := Locales[locale]
 	if !found {
