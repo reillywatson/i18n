@@ -268,13 +268,69 @@ func TestSplit(t *testing.T) {
 				{9, "CAD"},
 			},
 		},
+		{
+			money:  Money{1, "CAD"},
+			chunks: int64(12),
+			expMoneys: []Money{
+				{1, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+			},
+		},
+		{
+			money:  Money{11, "CAD"},
+			chunks: int64(12),
+			expMoneys: []Money{
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{1, "CAD"},
+				{0, "CAD"},
+			},
+		},
+		{
+			money:  Money{0, "CAD"},
+			chunks: int64(12),
+			expMoneys: []Money{
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+				{0, "CAD"},
+			},
+		},
 	}
 
-	for _, f := range fixtures {
-		got := f.money.Split(f.chunks)
-		if !reflect.DeepEqual(got, f.expMoneys) {
-			t.Errorf("expected %s, got %s", f.expMoneys, got)
-		}
+	for index, f := range fixtures {
+		t.Run(fmt.Sprintf("Test %d", index), func(t *testing.T) {
+			got := f.money.Split(f.chunks)
+			if !reflect.DeepEqual(got, f.expMoneys) {
+				t.Errorf("expected %s, got %s", f.expMoneys, got)
+			}
+		})
 	}
 }
 

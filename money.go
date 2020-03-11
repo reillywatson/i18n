@@ -23,7 +23,6 @@ var (
 	ErrMoneyOverflow              = errors.New("i18n: money overflow")
 	ErrMoneyDivideByZero          = errors.New("i18n: money division by zero")
 	ErrMoneyDecimalPlacesTooLarge = errors.New("i18n: money decimal places too large")
-	ErrMoneyCannotSplit           = errors.New("i18n: cannot split money into more chunks than cents in total")
 	ErrMoneyZeroOrLessChunks      = errors.New("i18n: cannot split money into zero or less chunks")
 )
 
@@ -107,9 +106,6 @@ func (m Money) Div(n Money) Money {
 func (m Money) Split(chunks int64) []Money {
 	if chunks <= 0 {
 		panic(ErrMoneyZeroOrLessChunks)
-	}
-	if chunks > m.M {
-		panic(ErrMoneyCannotSplit)
 	}
 
 	chunkAmount := m.M / chunks
