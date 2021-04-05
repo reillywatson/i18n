@@ -14,6 +14,9 @@ import (
 	"strings"
 )
 
+// A Money represents an amount of money in a specific currency.
+// A Money value is immutable; all operations return new Money structs
+// rather than modifying the value in-place.
 type Money struct {
 	M int64
 	C CurrencyCode
@@ -86,7 +89,8 @@ func (m Money) Add(n Money) Money {
 	return Money{C: m.C, M: r}
 }
 
-// Divides one Money type from another.
+// Div returns the result of dividing m by n.
+// It panics if n has a zero value.
 func (m Money) Div(n Money) Money {
 	if m.C == "" {
 		m.C = n.C
@@ -100,9 +104,12 @@ func (m Money) Div(n Money) Money {
 	return Money{C: m.C, M: rnd(i, f-float64(i))}
 }
 
-// Splits the money amount into equal parts, up to 1 cent variation to not lose cents
-// The larger cent amounts go in the beginning of the array
-// chunks - how many parts to split money into, cannot exceed total cents in money amount
+// Split splits m into chunks parts.
+// If m doesn't divide evenly, the remainder amount will be split as
+// evenly as possible among the parts, with the earlier results getting larger amounts.
+// Examples:
+// Money{C:"CAD",M:10}.Split(2) -> {5,5} // even split
+// Money{C:"CAD",M:10}.Split(3) -> {4,3,3} // split with remainder, larger values go first
 func (m Money) Split(chunks int64) []Money {
 	if chunks <= 0 {
 		panic(ErrMoneyZeroOrLessChunks)
@@ -140,17 +147,17 @@ func (m Money) dpf() float64 {
 	return float64(m.dp())
 }
 
-// Gets value of money truncating after DP (see Value() for no truncation).
+// Gett gets the value of money truncating after DP (see Value() for no truncation).
 func (m Money) Gett() int64 {
 	return m.M / m.dp()
 }
 
-// Gets the float64 value of money (see Value() for int64).
+// Get gets the float64 value of money (see Value() for int64).
 func (m Money) Get() float64 {
 	return float64(m.M) / m.dpf()
 }
 
-// Multiplies two Money types.
+// Mul returns the result of multiplying m by n.
 func (m Money) Mul(n Money) Money {
 	if m.C == "" {
 		m.C = n.C
@@ -158,13 +165,13 @@ func (m Money) Mul(n Money) Money {
 	return m.Mulf(n.Get())
 }
 
-// Multiplies a Money with a float to return a money-stored type.
+// Mulf is a convenience wrapper for m.Mul(MakeMoney(m.C, f))
 func (m Money) Mulf(f float64) Money {
 	res, _ := big.NewFloat(m.Get()).SetMode(big.ToPositiveInf).Mul(big.NewFloat(m.Get()), big.NewFloat(f)).Float64()
 	return MakeMoney(m.C, res)
 }
 
-// Returns the negative value of Money.
+// Neg returns a Money representing the negative value of m.
 func (m Money) Neg() Money {
 	if m.M != 0 {
 		return Money{C: m.C, M: m.M * -1}
@@ -188,7 +195,7 @@ func rnd(r int64, trunc float64) int64 {
 	return r
 }
 
-// Returns the Sign of Money 1 if positive, -1 if negative.
+// Sign returns the sign of m: 1 if positive or zero, -1 if negative.
 func (m Money) Sign() int {
 	if m.M < 0 {
 		return -1
@@ -301,7 +308,7 @@ func (m Money) Format(locale string) string {
 	return output
 }
 
-// Subtracts one Money type from another.
+// Sub returns the result of subtracting n from m.
 func (m Money) Sub(n Money) Money {
 	if m.C == "" {
 		m.C = n.C
@@ -313,7 +320,7 @@ func (m Money) Sub(n Money) Money {
 	return Money{C: m.C, M: r}
 }
 
-// Returns in int64 the value of Money (also see Gett(), See Get() for float64).
+// Value returns in int64 the value of Money (also see Gett(), See Get() for float64).
 func (m Money) Value() int64 {
 	return m.M
 }
